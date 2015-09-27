@@ -1,0 +1,16 @@
+Iterativo e incremental
+	En el caso del software se refiere a que existen patrones de desarrollo, por ejemplo el RUP (Rational Unified Process) que tiene ciclos iterativos: 
+
+	a) usuario dice q es lo q quiere 
+	b) Programador lo implementa 
+	c) se le muestra al usuario 
+
+	ahora esto es iterativo e incremental 
+
+	de c) pasas a a) 
+
+	a) usuario vuelve a pedir algo (lo revisa y lo hace en base a lo que quiere) 
+	b) Programador lo implementa 
+	c) se le muestra al usuario 
+
+	y es incremental porque en cada ciclo, tu has programado algo mas, osea construyes o modificas sobre una base

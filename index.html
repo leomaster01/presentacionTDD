@@ -1,219 +1,1149 @@
 <!doctype html>
 <html lang="en">
+<head>
+	<meta charset="utf-8">
 
-	<head>
-		<meta charset="utf-8">
+	<title>NodeJS - Realtime</title>
 
-		<title>TDD - Test Driven Development</title>
+	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+	<meta name="author" content="Hakim El Hattab">
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+	<!-- Code syntax highlighting 
+			<link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Code syntax highlighting 
-				<link rel="stylesheet" href="lib/css/zenburn.css">
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section data-background="images/nodejs.png" data-background-repeat="no-repeat" data-background-size="800px">
+			</section>
 
-		<!--[if lt IE 9]>
-		<script src="lib/js/html5shiv.js"></script>
-		<![endif]-->
-	</head>
+			<section>
+				<h1>Temas</h1>
+				<ol style="float:left;padding-left:100px;width:100%;">
+					<li>¿Que es NodeJS?</li>
+					<li>Asincronismo</li>
+					<li>Concurrencia</li>
+					<li>Frameworks</li>
+					<li>MEAN</li>
+					<li>Realtime con Socket.io</li>
+					<li>Ventajas y desventajas</li>
+					<li>Preguntas</li>
+				</ol>
+			</section>
 
-	<body>
+			<section>
+				<h1>¿Que es?</h1>
+				<p>NodeJs es una plataforma que se ejecuta principalmente para desarrollar aplicaciones web utilizando Javascript en el servidor.</p>
+				<p>Fue creado por Ryan Dahl en 2009 y su evolución está apadrinada por la empresa Joyent.</p>
+			</section>
 
-		<div class="reveal">
+			<section>
+				<h1>¿Porque usar NodeJS?</h1>
+				<ul>
+					<li>Es rápido, corre en el motor v8 de Google.</li>
+					<li>Está construido para funcionar de manera asíncrona.</li>
+					<li>Es una excelente opción para aplicaciones en tiempo real.</li>
+					<li>Funciona muy bien con base de datos no relacionales.</li>
+					<li>El mismo lenguaje en todo el stack.</li>
+					<li>Comunidad activa.</li>
+				</ul>
+			</section>
 
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
+			<section>
+				<h1>¿Qué es el motor V8?</h1>
+				<ul>
+					<li>Es el motor JavaScript subyacente que Google usa con su navegador Chrome. </li>
+					<li>Un motor JavaScript interpreta el código y lo ejecuta</li>
+					<li>Este motor se puede descargar e incorporarlo a cualquier aplicación que se desee</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>Programación orientada a eventos</h1>
+				<ul>
+					<li>NodeJS utiliza lo que se conoce como modelo de programación orientado por eventos</li>
+					<li>Cuando se realiza una conexión (evento)</li>
+					<li>Cuando se reciben datos a través de la conexión (evento)</li>
+					<li>Cuando se dejan de recibir datos por la conexión (evento)</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>Función sincrónica</h1>
+				<p>Es aquella que bloquea el hilo de ejecución hasta que se resuelva y después puede continuar. Ejemplo:</p>
+				<ol>
+					<li>Validar campos</li>
+					<li>Guardar en la DB</li>
+					<li>Enviar email de bienvenida</li>
+					<li>Buscar amigos en FB</li>
+					<li>Guardar amigos en la DB</li>
+					<li>Informar al cliente que se registró</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>Ejemplo asincronismo</h1>	
+
+				<pre><code data-trim contenteditable>
+Validar Campos
+	--> Guardar en la BD
+		--> Informar al Cliente
+	--> Buscar amigos en FB
+		--> Guardar en la BD
+	--> Enviar email de bienvenida
+				</code></pre>
+			</section>
+
+			<section>
+				<h2>Ejemplo</h2>
+				<h1>Código bloqueante</h1>	
+				<pre><code data-trim contenteditable>
+var contents = fs.readFileSync("/etc/hosts");
+console.log(contents);
+console.log("haciendo otra cosa!"); 
+				</code></pre>
+			</section>
+
+			<section>
+				<h2>Gracias a callbacks!</h2>
+				<h1>Código no-bloqueante</h1>	
+				<pre><code data-trim contenteditable>
+var contents = fs.readFileSync("/etc/hosts", function(err, contents){
+    console.log(contents);
+});
+console.log("haciendo otra cosa"); 
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>Concurrencia</h1>
+				<p>En lenguajes como Java™ y PHP, cada conexión genera un nuevo hilo que potencialmente viene acompañado de 2 MB de memoria. <br>
+				En un sistema que tiene 8 GB de RAM, esto da un número máximo teórico de conexiones concurrentes de cerca de 4.000 usuarios.<br>
+				Si se desea que la aplicación soporte más usuarios, necesitará agregar más y más servidores.</p>
+			</section>
+
+			<section>
+				<h1>Concurrencia en NodeJS</h1>
+				<ul>
+					<li>En lugar de generar un nuevo hilo para cada conexión, cada conexión dispara una ejecución de evento dentro del proceso del motor de Node.</li>
+					<li>Afirma que nunca se quedará en punto muerto, porque no se permiten bloqueos y porque no se bloquea directamente para llamados E/S.</li>
+					<li>Afirma que un servidor que lo ejecute puede soportar decenas de miles de conexiones concurrentes.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>NODE PACKAGED MODULES</h2>
+				<h1>NPM</h1>
+				<img src="images/npm.png" alt="" border="0" style="border:none;">
+				<ul>
+					<li>Repositorio de módulos NodeJS</li>
+					<li>Gestiona la instalación y actualización de módulos</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>¿Quienes usan NodeJS?</h1>
+				<ul id="listaEmpresas">
+					<li>Google</li>						
+					<li>Yahoo</li>
+					<li>Microsoft</li>
+					<li>Mozilla</li>
+					<li>VMWare</li>
+				</ul>
+				<ul id="listaEmpresas">
+					<li>Ebay</li>
+					<li>PayPal</li>
+					<li>Uber</li>
+					<li>Netflix</li>
+					<li>Wikipedia</li>				
+				</ul>
+				<ul id="listaEmpresas">
+					<li>Flipboard</li>
+					<li>Trello</li>
+					<li>Linkedin</li>
+					<li>New York Times</li>
+					<li>Medium</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>Frameworks</h1>
+				<div style="clear:fix;"></div>
+				<ul>
+					<li>Express</li>
+					<li>LoopBack</li>
+					<li>Hapi</li>
+					<li>Sails</li>
+					<li>Restify</li>
+					<li>Meteor</li>
+					<li>Socket.io</li>
+				</ul>
+			</section>
+
+
+			<section>
+				<h2>Comparaciones</h2>
+				<h1>Frameworks</h1>
+				<div>
+<table border="1" style="font-size:20px!important;">
+<tbody><tr>
+  <th id="user-content-feature"> </th>
+  <th>LoopBack</th>
+  <th>Express</th>
+  <th>Hapi</th>
+  <th>Sails</th>
+  <th>Restify</th>
+  <th>Meteor</th>
+</tr>
+
+<tr>
+  <td class="col1">Type</td>
+  <td>API framework</td>
+  <td>HTTP server library</td>
+  <td>HTTP server framework</td>
+  <td>Web MVC framework</td>
+  <td>REST HTTP library</td>
+  <td>Full-stack JavaScript app platform</td>
+</tr>
+
+<tr>
+  <td class="col1">Top Features</td>
+  <td>Enterprise connectivity, API Explorer, generators, client SDKs, websocket microservices</td>
+  <td>HTTP routing, middleware</td>
+  <td>Modularity, security</td>
+  <td>Rails familiarity, MVC</td>
+  <td>Simplicity, REST routing</td>
+  <td>Universal JavaScript, reactive rendering, websocket microservices</td>
+</tr>
+
+<tr>
+  <td class="col1">Suitable For</td>
+  <td>Web apps, APIs</td>
+  <td>Simple web apps</td>
+  <td>Web apps, APIs</td>
+  <td>Web apps, APIs</td>
+  <td>Simple REST APIs</td>
+  <td>Web apps</td>
+</tr>
+
+<tr>
+  <td class="col1">Github Stars</td>
+  <td>5k</td>
+  <td>19k</td>
+  <td>4k</td>
+  <td>10k</td>
+  <td>3k</td>
+  <td>28k</td>
+</tr>
+
+<tr>
+  <td class="col1">Support</td>
+  <td>StrongLoop</td>
+  <td>StrongLoop</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>Meteor Development Group </td>
+</tr>
+
+<tr>
+  <td class="col1">Pure Node runtime</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>No</td>
+</tr>
+
+<tr>
+  <td class="col1">Client SDKs</td>
+  <td>Angular, Browser, Node.js, iOS, Android, Xamarin</td>
+  <td>N/A</td>
+  <td>None</td>
+  <td>None</td>
+  <td>None</td>
+  <td>JavaScript, Cordova for iOS and Android, React, AngularJS</td>
+</tr>
+
+<tr>
+  <td class="col1">Export API Definition</td>
+  <td>Yes</td>
+  <td>With strong-remoting</td>
+  <td>None</td>
+  <td>None</td>
+  <td>None</td>
+  <td>With meteor-rest</td>
+</tr>
+
+<tr>
+  <td class="col1">Tools</td>
+  <td>Visual API composer, Explorer, CLI code generators</td>
+  <td>CLI app generator</td>
+  <td>Yeoman generator</td>
+  <td>Yeoman generator</td>
+  <td>Yeoman generator</td>
+  <td>CLI tool</td>
+</tr>
+
+<tr>
+  <td class="col1">Visual API composition</td>
+  <td>Yes</td>
+  <td>No</td>
+  <td>No</td>
+  <td>No</td>
+  <td>No</td>
+  <td>No</td>
+</tr>
+
+<tr>
+  <td class="col1">StrongLoop Arc Build &amp; Deploy, Monitoring, Profiling </td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+</tr>
+
+<tr>
+  <td class="col1">Extensions</td>
+  <td>Push, File Storage, Passport, OAuth 2.0, Express Middleware</td>
+  <td>Express / Connect Middleware</td>
+  <td>Hapi Plugins</td>
+  <td></td>
+  <td></td>
+  <td>Proprietary package system and repository, npm</td>
+</tr>
+
+<tr>
+  <td class="col1">Data sources </td>
+  <td>In-memory/file, MongoDB, MySQL, Oracle, PostgreSQL, SQL Server, ATG, Email, REST, SOAP</td>
+  <td>None</td>
+  <td>None</td>
+  <td>In-memory, File, PostgreSQL, MySQL, MongoDB </td>
+  <td>None</td>
+  <td>MongoDB, MySQL and PostgreSQL via 3rd-party packages</td>
+</tr>
+
+<tr>
+  <td class="col1">ACLs</td>
+  <td>Yes</td>
+  <td>No</td>
+  <td>No</td>
+  <td>No</td>
+  <td>No</td>
+  <td>Basic allow/deny</td>
+</tr>
+</tbody></table>
+</div>
+			</section>
+
+			<section>
+			<img src="images/mean.jpg" alt="MEAN" style="border:none;">
+			</section>
+
+			<section>
+				<h1>Mean</h1>
+				<ul>
+					<li>El acrónimo MEAN viene de (M)ongo + (E)xpress + (A)ngular + (N)ode</li>
+					<li>Es una solución completa en Javascript que ayuda a construir aplicaciones web rápidas, robustas y mantenibles.</li>
+					<li>Utilizar JS en todas las partes que componen una aplicación web actual: Frontend, Backend y Base de Datos</li>
+				</ul>
+			</section>
+
+			<section>
+			<section>
+			<img src="images/mongodb.jpg" alt="mongodb" style="border:none;">
+			</section>
+			<section>
+				<h1>MongoDB</h1>
+				<h2>¿Que es?</h2>
+				<ul>
+					<li>Es una base de datos orientada a documentos. </li>
+					<li>Los documentos son almacenados en BSON, que es una representación binaria de JSON.</li>
+					<li>No es necesario seguir un esquema</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>MongoDB</h1>
+				<h2>Ejemplo</h2>
+				<p>Colección Personas:</p>
+				<pre><code data-trim contenteditable>
+{
+  Nombre: "Pedro",
+  Apellidos: "Martínez Campo",
+  Edad: 22,
+  Aficiones: ["fútbol","tenis","ciclismo"],
+  Amigos: [
+   {
+     Nombre:"María",
+     Edad:22
+   },
+   {
+     Nombre:"Luis",
+     Edad:28
+   }
+  ]
+}
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>MongoDB</h1>
+				<h2>¿Cómo funciona?</h2>
+				<p>
+					MongoDB está escrito en C++, aunque las consultas se hacen pasando objetos JSON como parámetro.<br>
+					Ejemplo:
+				</p>
+				<pre><code data-trim contenteditable>
+				db.Clientes.find({Nombre:"Pedro"});
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>MongoDB</h1>
+				<h2>¿Dónde se lo puede utilizar?</h2>
+				<ul>
+					<li>Cualquier aplicación que necesite almacenar datos semi estructurados puede usar MongoDB. Es el caso de las típicas aplicaciones CRUD o de muchos de los desarrollos web actuales.</li>
+					<li>MongoDB es especialmente útil en entornos que requieran escalabilidad.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>MongoDB</h1>
+				<h2>¿Dónde no se debe usar MongoDB?</h2>
+				<ul>
+					<li>En aplicaciones que se utilicen transacciones</li>
+					<li>En aplicaciones que requieran de JOINS</li>
+					<li>Aggregation Framework (group | count | limit)</li>
+				</ul>
+			</section>
+
+			<!--<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests simples de lectura</h2>
+<table>
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>MySQL</strong>
+            </td>
+            <td style="text-align:right;">
+                <strong>MongoDB</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>Leer todos los objetos con id entre 100 y 110 millones</td>
+            <td style="text-align:right;">10m 5s</td>
+            <td style="text-align:right;">0,15s</td>
+        </tr>
+        <tr>
+            <td>Seleccionar un registro por id (entre 113 millones)</td>
+            <td style="text-align:right;">0,30s</td>
+            <td style="text-align:right;">0,12s</td>
+        </tr>
+        <tr>
+            <td>Seleccionar los ids de los registros entre dos fechas</td>
+            <td style="text-align:right;">4m 10s</td>
+            <td style="text-align:right;">0,16s</td>
+        </tr>
+        <tr>
+            <td>Seleccionar los ids de los registros entre dos fechas y contarlos</td>
+            <td style="text-align:right;">2m 48s</td>
+            <td style="text-align:right;">0,85s</td>
+        </tr>
+    </tbody>
+</table>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests simples de escritura (inserción de registros)</h2>
+<table style="width: 45em; margin: 0 auto;">
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>MySQL</strong>
+            </td>
+            <td style="text-align:right;">
+                <strong>MongoDB</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>70.000 usuarios</td>
+            <td style="text-align:right;">12s</td>
+            <td style="text-align:right;">3s</td>
+        </tr>
+        <tr>
+            <td>1.300.000 dominios</td>
+            <td style="text-align:right;">4m 36s</td>
+            <td style="text-align:right;">58s</td>
+        </tr>
+        <tr>
+            <td>1.300.000 dominios con índices</td>
+            <td style="text-align:right;">14m 13s</td>
+            <td style="text-align:right;">8m 27s</td>
+        </tr>
+        <tr>
+            <td>5.000.000 de entradas en el log</td>
+            <td style="text-align:right;">2h 10m 54s</td>
+            <td style="text-align:right;">1h 03m 53s</td>
+        </tr>
+        <tr>
+            <td>10.000.000 de entradas en el log</td>
+            <td style="text-align:right;">3h 27m 10s</td>
+            <td style="text-align:right;">1h 59m 11s</td>
+        </tr>
+        <tr>
+            <td>30.000.000 de entradas en el log</td>
+            <td style="text-align:right;">10h 18m 46s</td>
+            <td style="text-align:right;">5h 55m 25s</td>
+        </tr>
+    </tbody>
+</table>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests simples de escritura (sin y con Sharding)</h2>
+<table style="width: 45em; margin: 0 auto;">
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>MySQL</strong>
+            </td>
+            <td style="text-align:right;">
+                <strong>MongoDB</strong>
+            </td>
+            <td style="vertical-align:middle; text-align:right; width:7em;">
+                <strong>MongoDB (2 máquinas)</strong>
+            </td>
+            <td style="vertical-align:middle; text-align:right; width:7em;">
+                <strong>MongoDB (4 máquinas)</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>10.000.000 de documentos</td>
+            <td style="text-align:right;">26m 44s</td>
+            <td style="text-align:right;">7m 21s</td>
+            <td style="text-align:right;">3m 48s</td>
+            <td style="text-align:right;">1m 23s</td>
+        </tr>
+        <tr>
+            <td>20.000.000 de documentos</td>
+            <td></td>
+            <td style="text-align:right;">15m 58s</td>
+            <td style="text-align:right;">7m 46s</td>
+            <td style="text-align:right;">3m 40s</td>
+        </tr>
+        <tr>
+            <td>80.000.000 de documentos</td>
+            <td></td>
+            <td style="text-align:right;">53m 11s</td>
+            <td style="text-align:right;">31m 2s</td>
+            <td style="text-align:right;">16m 30s</td>
+        </tr>
+    </tbody>
+</table>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests de lectura multiusuario (50 usuarios)</h2>
+				<p>Totales para un dominio escogido al azar</p>
+<table style="width: 15em; margin: 0 auto;">
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>Mediana</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>MySQL</td>
+            <td style="text-align:right;">71ms</td>
+        </tr>
+        <tr>
+            <td>MongoDB</td>
+            <td style="text-align:right;">37ms</td>
+        </tr>
+    </tbody>
+</table>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests de lectura multiusuario (50 usuarios)</h2>
+				<p>Mostramos todas las entradas en el log para un dominio</p>
+<table style="width: 20em; margin: 0 auto;">
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>Mediana</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>MySQL</td>
+            <td style="text-align:right;">321ms</td>
+        </tr>
+        <tr>
+            <td>MongoDB</td>
+            <td style="text-align:right;">128ms</td>
+        </tr>
+        <tr>
+            <td>MongoDB (2 máquinas)</td>
+            <td style="text-align:right;">37ms</td>
+        </tr>
+    </tbody>
+</table>
+				</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Tests de lectura y escritura multiusuario (50 usuarios)</h2>
+				<p>80% de lecturas y +20% de escrituras</p>
+<table style="width: 20em; margin: 0 auto;">
+    <tbody>
+        <tr>
+            <td></td>
+            <td style="text-align:right;">
+                <strong>Mediana</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>MySQL</td>
+            <td style="text-align:right;">236ms</td>
+        </tr>
+        <tr>
+            <td>MongoDB</td>
+            <td style="text-align:right;">75ms</td>
+        </tr>
+        <tr>
+            <td>MongoDB (2 máquinas)</td>
+            <td style="text-align:right;">37ms</td>
+        </tr>
+    </tbody>
+</table>
+			</section>-->
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Rendimiento en lectura</h2>
+				<ul>
+				    <li>
+				        <strong>MongoDB es más rápido en operaciones simples de lectura</strong>
+				    </li>
+				    <li>En múltiples lecturas sencillas consecutivas MongoDB es mucho más rápido que MySQL</li>
+				    <li>Para búsquedas por una condición (lo que sería una consulta 
+				        <span class="caps">WHERE</span> en 
+				        <span class="caps">SQL</span>) MongoDB ha sido un 250% más rápido que MySQL 
+				    </li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Funciones de agregación</h2>
+				<ul>
+				    <li>Para consultas de agregación MySQL supera al framework nativo de MongoDB. </li>
+				    <li>MySQL es mucho más rápido obteniendo datos agregados, de 3 a 6 veces más rápido en los tests que se realizaron.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Rendimiento en escritura</h2>
+				<ul>
+				    <li>MongoDB fue superior a Mysql</li>
+				    <li>En lecturas concurrentes MongoDB es más rápido (entre un 15% y un 40% en nuestras pruebas con 50 usuarios)</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>MongoDB vs Mysql</h1>
+				<h2>Observaciones</h2>
+				<ul>
+				    <li>
+				        <strong>MongoDB es más escalable</strong>, lo que significa que cuando la carga de usuarios aumenta el tiempo de respuesta se mantiene estable
+				    </li>
+				    <li>
+				        <strong>MongoDB es muy flexible</strong>. La posibilidad de añadir máquinas de forma transparente a las aplicaciones nos da una gran flexibilidad a la hora de definir arquitecturas hardware
+				    </li>
+				</ul>
+			</section>
+			</section>
+
+			<section>
+
 				<section>
-					<h1>Test Driven Development</h1>
-					(Desarrollo Dirigido por Pruebas)
+				<img src="images/express.jpg" alt="MEAN" style="border:none;">
 				</section>
 				<section>
-					<h1>Temas</h1>
-					<ol>
-						<li class="fragment">¿Que es TDD?</li>
-						<li class="fragment">¿Cómo se hace TDD?</li>
-						<li class="fragment">Ejemplo</li>
-						<li class="fragment">Tres reglas simples</li>
-						<li class="fragment">Ventajas y desventajas</li>
-						<li class="fragment">Herramientas</li>
-						<li class="fragment">¡A codear!</li>
-					</ol>
+					<h1>Express</h1>
+					<p>Es un framework que permite crear servidores web y recibir peticiones HTTP de una manera sencilla, lo que permite también crear APIs REST de forma rápida.</p>
 				</section>
 				<section>
-					<h1>¿Qué es TDD?</h1>
-					<ul>
-						<li class="fragment">Técnica de Aprendizaje
-							<ul>
-								<li>Iterativa e Incremental</li>
-								<li>Constructivista</li>
-							</ul>
-
-							<img data-src="images/tdd.png" alt="Down arrow" style="position:absolute; top:130px;right:0;">
-						</li>
-						<li class="fragment">Basada en Feedback inmediato</li>
-						<li class="fragment">Que recuerda todo lo aprendido</li>
-						<li class="fragment">Y permite asegurarnos de no haber "desaprendido"</li>
-						<li class="fragment">Incluye análisis, diseño, programacion y testing</li>
-					</ul>
-				</section>
-				<section>
-					<h1>¿Como se hace TDD?</h1>
-					<ol>
-						<li class="fragment">Escribir un test
-							<ul>
-								<li>Debe ser el más sencillo que se nos ocurra</li>
-								<li>Debe fallar al correrlo</li>
-							</ul>
-						</li>
-						<li class="fragment">
-							Correr todos los tests
-							<ul>
-								<li>Si hay errores, implementar lo mínimo necesario para que pasen y GOTO 2</li>
-							</ul>
-						</li>
-						<li class="fragment">
-							Reflexiono, ¿Se puede mejorar el código?
-							<ul>
-								<li>Si -> Refactorizar. GOTO 2</li>
-								<li>No -> GOTO 1</li>
-							</ul>
-						</li>
-					</ol>
-				</section>
-
-
-				<section data-markdown>
-					<h2>Ejemplo: </h2>
-					<pre><code data-trim contenteditable>
-							import unittest
-
-							class CalculadoraTest(unittest.TestCase):
-							
-							    def test_cuando_sumo_1_mas_2_el_resultado_es_3(self):
-							      calculadora = Calculadora();    
-							      calculadora.suma(1,2)
-
-							      self.assertEqual(3, calculadora.valor())
-
+				<h2>Crear una APP </h2>
+				<h1>Express - Ejemplos</h1>
+				<pre><code data-trim contenteditable>
+$ mkdir myapp
+$ cd myapp
+$ npm init
+$ npm install express --save
 					</code></pre>
 				</section>
 
-
 				<section>
-					<h1>Tres reglas simples</h1>
-					<section>
-						<blockquote>"Solo puede escribir el código de producción (para implementar una funcionalidad) si ya ha escrito su respectivo código de prueba."</blockquote>
-					</section>
-					<section>
-						<blockquote>&ldquo; Solo puede escribir el código de prueba mínimo necesario que haga que el código de producción falle. &rdquo;</blockquote>
-					</section>
-					<section>
-						<blockquote>Solo puede escribir el código de producción necesario para hacer que éste pase su código de prueba.</blockquote>
-					</section>
-				</section>
+					<h2>Generar esqueleto</h2>
+					<h1>Express - Ejemplos</h1>
+					<pre><code data-trim contenteditable>
+$ npm install express-generator -g
+					</code></pre>
+					
+					<pre><code data-trim contenteditable>
+.
+├── app.js
+├── bin
+│   └── www
+├── package.json
+├── public
+│   ├── images
+│   ├── javascripts
+│   └── stylesheets
+│       └── style.css
+├── routes
+│   ├── index.js
+│   └── users.js
+└── views
+    ├── error.jade
+    ├── index.jade
+    └── layout.jade
 
-
-				<section>
-					<h2>Ventajas</h2>
-					<section>Nos centramos en el Algorítmo</section>
-					<section>Mejora el diseño</section>
-					<section>Se asegura de que todo el código escrito está cubierto por una prueba</section>
-				</section>
-
-
-				<section>
-					<h2>Desventajas</h2>
-					<section>Tardamos más en terminar</section>
-					<section>Hay que cambiar muchos test si cambiamos código</section>
-					<section>Problema con la persistencia</section>
-				</section>
-
-				<section>
-					<h2>Herramientas en Python</h2>
-					<ul>
-						<li>Unittest, Doctest, Nose</li>
-						<li>Mokito for Python, Mocker, Pydoubles</li>
-						<li>Selenium, Django Testing</li>
-						<li>Behave, PyFIT, Lettuce</li>
-					</li>
-					<p>Fuente: <a href="https://wiki.python.org/moin/PythonTestingToolsTaxonomy">https://wiki.python.org/moin/PythonTestingToolsTaxonomy</a></p>
+7 directories, 9 files
+					</code></pre>
 				</section>
 
 				<section>
-					<h1>¡A codear! =)</h1>
-				</section>
+					<h2>Hola mundo!</h2>
+					<h1>Express - Ejemplos</h1>
+					<p>Crear archivo app.js</p>
+					<pre><code data-trim contenteditable>
+var express = require('express');
+var app = express();
 
-				<section data-background="http://i.giphy.com/90F8aUepslB84.gif"></section>
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+})
+					</code></pre>
+					
+					<pre><code data-trim contenteditable>
+$ node app.js
+					</code></pre>
+				</section>
 
 				<section>
-					<h1>¿Preguntas?</h1>
+					<h2>Enrutamiento básico</h2>
+					<h1>Express - Ejemplos</h1>
+					<pre><code data-trim contenteditable>
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+
+app.post('/', function (req, res) {
+  res.send('Got a POST request');
+});
+
+app.put('/user', function (req, res) {
+  res.send('Got a PUT request at /user');
+});
+
+app.delete('/user', function (req, res) {
+  res.send('Got a DELETE request at /user');
+});
+
+app.get('/prueba', function(req, res){
+   res.render('prueba', {
+      fruta: 'Manzana',
+      color: 'Rojo'
+   });
+});
+					</code></pre>
 				</section>
 
-				<section style="text-align: left;">
-					<h1>¡Gracias!</h1>
-					<p>
-						- Leandro Martinez<br>
-						- Diego Romero<br>
-						- <a href="https://github.com/leomaster01/presentacionTDD">https://github.com/leomaster01/presentacionTDD</a><br>
-						- <a href="https://github.com/hakimel/reveal.js">https://github.com/hakimel/reveal.js</a>
-					</p>
+				<section>
+					<h1>Express - JADE</h1>
+					<p>Es el motor de plantillas por defecto de Express</p>
+					<pre><code data-trim contenteditable>
+[elemento] Contenido del elemento
+
+[elemento_padre]
+  [elemento_hijo]
+					</code></pre>
 				</section>
 
-			</div>
+				<section>
+					<h1>Express - JADE</h1>
+					<p class="font12">En JADE:</p>
+					<div class="cajaLeft">
+						<pre><code data-trim contenteditable>
+doctype
+html
+  head
+    title Jade
+  body
+    h1 Bienvenidos a Jade
+						</code></pre>
+					</div>
+					<p class="font12">HTML:</p>
+					<div class="cajaRight">
+						<pre><code data-trim contenteditable>
+<!--
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Jade</title>
+   </head>
+   <body>
+      <h1>Bienvenidos a Jade</h1>
+   </body>
+</html>
+-->
+						</code></pre>
+					</div>
+				</section>
+
+				<section>
+					<h1>Express - JADE</h1>
+					<p class="font12">En JADE:</p>
+					<div class="cajaLeft">
+						<pre><code data-trim contenteditable>
+div#contenedor
+  p.parrafo Párrafo 1
+  p.parrafo Párrafo 2
+  p.parrafo Párrafo 3
+						</code></pre>
+					</div>
+					<p class="font12">HTML:</p>
+					<div class="cajaRight">
+						<pre><code data-trim contenteditable>
+<div id="contenedor">
+   <p class="parrafo">Párrafo 1</p>
+   <p class="parrafo">Párrafo 2</p>
+   <p class="parrafo">Párrafo 3</p>
+</div>
+						</code></pre>
+					</div>
+				</section>
+
+				<section>
+					<h2>Variables, condicionales y ciclos de repetición </h2>
+					<h1>Express - JADE</h1>
+						<pre><code data-trim contenteditable>
+-var me_gusta_node = true;
+-if(me_gusta_node)
+  p Me gusta Node
+-else
+  p No me gusta Node
+
+-var colores = new Array('Verde', 'Amarillo', 'Rojo');
+ul 
+  -each item in colores
+    li= item
+						</code></pre>
+				</section>
+			</section>
+
+			<section>
+			<img src="images/angularLogo.png" alt="Angular" style="border:none;">
+			</section>
+			<section>
+				<h1>Angular</h1>
+				<p>
+					Es un framework JS para la parte cliente de una aplicación web, que respeta el paradigma MVC y permite crear Single-Page Applications (Aplicaciones web que no necesitan recargar la página), de manera más o menos sencilla. Es un proyecto mantenido por Google y que actualmente está en auge.
+				</p>
+			</section>
+
+			<section>
+				<h2>APP hecha en MEAN</h2>
+				<h1>Ejemplo</h1>
+				<p>meanstacktutorial - https://github.com/michaelcheng429/meanstacktutorial</p>
+			</section>
+<!--
+			<section>
+				<section>
+				<h1>Loopback.io - Ejemplos</h1>
+				<h2>LoopBack Yeoman generador </h2>
+				<pre><code data-trim contenteditable>
+$ mkdir office-supplies
+$ cd office-supplies
+$ slc loopback
+$ slc loopback:model product
+$ slc loopback:model category
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>Loopback.io - Ejemplos</h1>
+				<h2>Persistir datos</h2>
+				<pre><code data-trim contenteditable>
+category.create({name: 'stationery', id: 1});
+product.create({
+  categoryId: 1,
+  name: 'Pencil',
+  price: 0.99
+});
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>Loopback.io - Ejemplos</h1>
+				<h2>Definir relaciones de modelo</h2>
+				<pre><code data-trim contenteditable>
+{
+  "name": "product",
+  "base": "PersistedModel",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "category",
+      "foreignKey": "categoryId"
+    },
+    "owner": {
+      "type": "belongsTo",
+      "model": "owner",
+      "foreignKey": "ownerId"
+    }
+  },
+  "acls": [],
+  "methods": []
+}
+				</code></pre>
+			</section>
+
+			<section>
+				<h1>Loopback.io - Ejemplos</h1>
+				<h2>Ejecutar ad-hoc querys</h2>
+				<pre><code data-trim contenteditable>
+MyProduct.find({
+    where: {price: {lt: 100}},
+    order: 'price ASC',
+    limit: 3
+}, function(err, products) {
+    ...
+});
+				</code></pre>
+			</section>
+			</section>		
+			-->		
+
+
+
+			<section data-background="images/socketio_logo.png" data-background-repeat="no-repeat" data-background-size="800px">
+			</section>
+
+			<section>
+				<h1 class="socketio">¿Qué es Websocket?</h1>
+				<ul>
+					<li>Es mantener una conexión abierta entre un servidor web y un navegador, lo cual permite que tanto el navegador como el servidor envíen datos cuando lo deseen. </li>
+					<li>Como la conexión es persistente, el intercambio de datos es muy rápido y se le se llama “tiempo real”</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1 class="socketio">Socket.IO</h1>
+				<ul>
+					<li>El problema con los websockets es que no soportan determinadas características necesarias, por lo cual nace la librería para node.js llamada Socket.IO</li>
+					<li>Nos permite manejar eventos en tiempo real mediante una conexión TCP y nos provee de todas las funcionalidades necesarias, así como los problemas de compatibilidad con todos los navegadores.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1 class="socketio">Enviando y recibiendo eventos</h1>
+				<p>Servidor</p>
+				<pre><code data-trim contenteditable>	
+io.on('connection', function(socket){
+  io.emit('Hola pepe!', msg);
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+  socket.on('disconnect', function(){
+    io.emit('Chau pepe!', msg);
+  });
+});
+				</code></pre>
+			</section>
+
+			<section>
+				<h1 class="socketio">Enviando y recibiendo eventos</h1>
+				<p>Cliente</p>
+				<pre><code data-trim contenteditable>
+var socket = io();
+$('form').submit(function(){
+  socket.emit('chat message', $('#m').val());
+});
+socket.on('chat message', function(msg){
+  $('#messages').append($('li').text(msg));
+});
+				</code></pre>
+			</section>
+
+			<section>
+				<h1 class="socketio">Broadcasting</h1>
+				<p>Cliente</p>
+				<pre><code data-trim contenteditable>
+io.on('connection', function(socket){
+	socket.broadcast.emit('mensaje', {text: 'Un nuevo usuario se ha conectado.'});
+});
+				</code></pre>
+			</section>	
+
+			<section>
+				<h1 class="socketio">Salas</h1>
+				<p>Join/Leave</p>
+				<pre><code data-trim contenteditable>
+socket.join('room')
+socket.leave('room')
+				</code></pre>
+				<p>Emitting</p>
+				<pre><code data-trim contenteditable>
+io.socket.in('room').emit('event_name',data)
+				</code></pre>
+			</section>			
+
+			<section>
+				<h2>Chat y Pizarra</h2>
+				<h1>Ejemplo</h1>
+				<p>Chat - http://socket.io/get-started/chat/</p>
+				<p>Draw - https://github.com/JohnMcLear/draw</p>
+			</section>		
+
+			<section>
+				<h2>Con Arduino</h2>
+				<h1>Ejemplo</h1>
+				<video src="videos/nodejs-arduino.mp4" controls>
+				  Your browser does not support the <code>video</code> element.
+				</video>
+			</section>		
+			
+
+			<section>
+				<h1>VENTAJAS</h1>
+				<ul>
+					<li>Rapidez. Tanto en la ejecución, como en el desarrollo o la ejecución de pruebas unitarias.</li>
+					<li>Mejora en la experiencia de usuario. Su uso proporciona una mejor experiencia en UX.</li>
+					<li>Ahorro en infraestructura. Especialmente en el número de servidores necesarios para las aplicaciones. Por ejemplo, cuando LinkedIn migró todo su backend desde Ruby on Rails hacia Node.js redujo desde 30 hasta 3 su número de servidores.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>VENTAJAS <span>(continuación)</span></h1>
+				<ul>
+					<li>Conjunción entre BackEnd y FrontEnd. Los equipos de BackEnd y FrontEnd móvil pueden ser combinados en un conjunto único.</li>
+					<li>Flexibilidad.</li>
+					<li>Fácil de usar. Sobre todo si tienes experiencia con JavaScript.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>Desventajas</h1>
+				<ul>
+					<li>Nuevas versiones no compatibles con viejas</li>
+					<li>Falta de una librería estándar</li>
+					<li>Falta de librerías en general</li>
+					<li>Muchas formas de programar</li>
+					<li>No está probado lo suficiente</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>¿Preguntas?</h1>
+			</section>
+
+			<section style="text-align: left;">
+				<h1>¡Gracias!</h1>
+				<p>
+					- Leandro Martinez<br>
+					- <a href="https://github.com/leomaster01/presentacionNodeJs">https://github.com/leomaster01/presentacionNodeJs</a><br>
+				</p>
+			</section>
 
 		</div>
+	</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
 
-		<script>
-			window.addEventListener("mousedown", handleClick, false);
-			window.addEventListener("contextmenu", function(e) { e.preventDefault(); }, false);
+<script>
+	window.addEventListener("mousedown", handleClick, false);
+	window.addEventListener("contextmenu", function(e) { e.preventDefault(); }, false);
 
-			function handleClick(e) {
-				e.preventDefault();
-				if(e.button === 0) Reveal.next(); 
-				if(e.button === 2) Reveal.prev(); 
-			}
-			// Full list of configuration options available at:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				history: true,
-				center: true,
+	function handleClick(e) {
+		e.preventDefault();
+		if(e.button === 0) Reveal.next(); 
+		if(e.button === 2) Reveal.prev(); 
+	}
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: true,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+		transition: 'slide', // none/fade/slide/convex/concave/zoom
 
-				// Optional reveal.js plugins
-				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true },
-					{ src: 'plugin/notes/notes.js', async: true }
-				]
-			});
+		// Optional reveal.js plugins
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true }
+		]
+	});
 
-		</script>
+</script>
 
-	</body>
+</body>
 </html>
